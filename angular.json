@@ -2,7 +2,66 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "",
-  "projects": {},
+  "projects": {
+    "backend-authentication": {
+      "root": "apps/backend/authentication",
+      "sourceRoot": "apps/backend/authentication/src",
+      "projectType": "application",
+      "prefix": "backend-authentication",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/builders:node-build",
+          "options": {
+            "outputPath": "dist/apps/backend/authentication",
+            "main": "apps/backend/authentication/src/main.ts",
+            "tsConfig": "apps/backend/authentication/tsconfig.app.json",
+            "assets": [
+              "apps/backend/authentication/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/backend/authentication/src/environments/environment.ts",
+                  "with": "apps/backend/authentication/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/builders:node-execute",
+          "options": {
+            "buildTarget": "backend-authentication:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/backend/authentication/tsconfig.app.json",
+              "apps/backend/authentication/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "apps/backend/authentication/jest.config.js",
+            "tsConfig": "apps/backend/authentication/tsconfig.spec.json"
+          }
+        }
+      }
+    }
+  },
   "cli": {
     "warnings": {
       "typescriptMismatch": false,
@@ -12,10 +71,12 @@
   },
   "schematics": {
     "@nrwl/schematics:application": {
-      "style": "scss"
+      "style": "scss",
+      "prefix": "kryptand"
     },
     "@nrwl/schematics:library": {
-      "style": "scss"
+      "style": "scss",
+      "prefix": "kryptand"
     }
   }
 }
