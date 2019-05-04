@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  authentication-persistence:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    container_name: auth-persistence
+    volumes:
+      - authentication:/data/db
+
+  chat:
+    container_name: chatmongo
+    image: mongo
+    ports:
+      - '27027:27017'
+    volumes:
+      - chat_data:/data/db
+
+  elassandra-seed:
+    container_name: elassandra-seed-node
+    image: strapdata/elassandra:latest
+    environment:
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    volumes:
+      - elassandra:/var/lib/cassandra
+    ports:
+      - '9042:9042' # Native transport
+      - '7199:7199' # JMX
+      - '9160:9160' # Thrift clients
+      - '9200:9200' # ES clients
+
+volumes:
+  elassandra:
+  authentication:
+  chat_data:

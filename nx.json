@@ -10,6 +10,18 @@
   "projects": {
     "backend-authentication": {
       "tags": []
+    },
+    "backend--trips": {
+      "tags": []
+    },
+    "backend--chat": {
+      "tags": []
+    },
+    "backend--smart-home": {
+      "tags": []
+    },
+    "core-persistence": {
+      "tags": []
     }
   }
 }
