@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   authentication-persistence:
     image: mongo:latest
@@ -17,15 +16,20 @@ services:
     volumes:
       - chat_data:/data/db
 
-  elassandra-seed:
-    container_name: elassandra-seed-node
+  elassandra:
+    container_name: elassandra-elasticsearch-node
     image: strapdata/elassandra:latest
     environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
       - xpack.security.enabled=false
       - xpack.monitoring.enabled=false
       - xpack.ml.enabled=false
       - xpack.graph.enabled=false
       - xpack.watcher.enabled=false
+    restart: unless-stopped
+    networks:
+      - elk
     volumes:
       - elassandra:/var/lib/cassandra
     ports:
@@ -33,8 +37,25 @@ services:
       - '7199:7199' # JMX
       - '9160:9160' # Thrift clients
       - '9200:9200' # ES clients
+  kibana:
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_PASSWORD: changeme
+      ELASTICSEARCH_URL: http://elassandra:9200
+      ELASTICSEARCH_USERNAME: elastic
+    image: docker.elastic.co/kibana/kibana-oss:6.2.1
+    networks:
+      elk: null
+    ports:
+      - 5601:5601
+    restart: unless-stopped
 
 volumes:
   elassandra:
   authentication:
   chat_data:
+
+networks:
+  elk:
+    driver: bridge
